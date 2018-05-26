@@ -113,11 +113,14 @@
     </Compile>
     <Compile Include="Models\Adress.cs" />
     <Compile Include="Models\BaseModel.cs" />
+    <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Client.cs" />
+    <Compile Include="Models\MenuItem.cs" />
     <Compile Include="Models\ModelConfiguration.cs" />
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\PizzaDbContext.cs" />
     <Compile Include="Models\PizzaDbInitializer.cs" />
-    <Compile Include="Models\SampleModel.cs" />
     <Compile Include="Utils\RelayCommand.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

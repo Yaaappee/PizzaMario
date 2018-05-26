@@ -7,7 +7,11 @@ namespace PizzaSanMorino.Models
 {
     public class Client : BaseModel
     {
-        private ICollection<Adress> _adresses;
+        public Client()
+        {
+            Adresses = new HashSet<Adress>();
+            Orders = new HashSet<Order>();
+        }
 
         public string FirstName { get; set; }
 
@@ -21,10 +25,8 @@ namespace PizzaSanMorino.Models
 
         public string PhoneNumber { get; set; }
 
-        public virtual ICollection<Adress> Adresses
-        {
-            get => _adresses ?? (_adresses = new HashSet<Adress>());
-            set => _adresses = value;
-        }
+        public virtual ICollection<Adress> Adresses { get; set; }
+
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }
