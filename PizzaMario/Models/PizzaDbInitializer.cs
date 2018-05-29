@@ -94,7 +94,7 @@ namespace PizzaMario.Models
                 FirstName = "Ihor",
                 SecondName = "Sokolov",
                 BirthDate = new DateTime(1992, 11, 1),
-                PhoneNumber = "991234567"
+                PhoneNumber = "+380991234567"
             };
 
             var adressIhor1 = new Adress()
@@ -123,7 +123,7 @@ namespace PizzaMario.Models
                 FirstName = "Evgeniy",
                 SecondName = "Fedchenko",
                 BirthDate = new DateTime(1991, 12, 31),
-                PhoneNumber = "997654321"
+                PhoneNumber = "+380997654321"
             };
 
             var adressEvgeniy1 = new Adress()
@@ -163,8 +163,8 @@ namespace PizzaMario.Models
             var order2 = new Order
             {
                 Id = 2,
-                ClientId = clientIhor.Id,
-                AdressId = adressIhor1.Id,
+                ClientId = clientEvgeniy.Id,
+                AdressId = adressEvgeniy1.Id,
                 TotalPrice = menuItemTuna.Price + menuItemPizzaBbq.Price + menuItemPepsi.Price + menuItemJuice.Price
             };
 
