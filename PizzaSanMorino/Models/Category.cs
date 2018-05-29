@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 
 namespace PizzaSanMorino.Models
 {
@@ -6,11 +6,11 @@ namespace PizzaSanMorino.Models
     {
         public Category()
         {
-            MenuItems = new HashSet<MenuItem>();
+            MenuItems = new ObservableCollection<MenuItem>();
         }
 
         public string Name { get; set; }
 
-        public virtual ICollection<MenuItem> MenuItems { get; set; }
+        public virtual ObservableCollection<MenuItem> MenuItems { get; set; }
     }
 }

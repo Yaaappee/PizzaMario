@@ -4,6 +4,8 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.ComponentModel;
+using System.Globalization;
+using System.Threading;
 using PizzaSanMorino.ViewModels;
 using PizzaSanMorino.Views;
 
@@ -16,6 +18,8 @@ namespace PizzaSanMorino
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("uk-UA");
+            Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
             Log.Info("Application Startup");
 
             // For catching Global uncaught exception

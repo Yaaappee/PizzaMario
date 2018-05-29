@@ -19,18 +19,6 @@ namespace PizzaSanMorino.Views
         {
             InitializeComponent();
             this.Closing += MainView_Closing;
-            using (var context = new PizzaDbContext())
-            {
-                var client = context.Clients.First();
-                var outputString = client.FirstName + " " + client.SecondName;
-                var outputString2 = string.Empty;
-                foreach (Adress adress in client.Adresses)
-                {
-                    outputString += Environment.NewLine + adress.City + " " + adress.Street;
-                }
-
-                MessageBox.Show(outputString + Environment.NewLine + outputString2);
-            }
         }
 
         private void MainView_Closing(object sender, System.ComponentModel.CancelEventArgs e)

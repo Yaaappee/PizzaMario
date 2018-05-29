@@ -1,7 +1,14 @@
-﻿namespace PizzaSanMorino.Models
+﻿using System.Collections.ObjectModel;
+
+namespace PizzaSanMorino.Models
 {
     public class Adress : BaseModel
     {
+        public Adress()
+        {
+            Orders = new ObservableCollection<Order>();
+        }
+
         public string City { get; set; }
 
         public string Street { get; set; }
@@ -13,5 +20,7 @@
         public int ClientId { get; set; }
 
         public virtual Client Client { get; set; }
+
+        public virtual ObservableCollection<Order> Orders { get; set; }
     }
 }

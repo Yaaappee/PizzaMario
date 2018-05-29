@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using SQLite.CodeFirst;
 
@@ -9,8 +9,8 @@ namespace PizzaSanMorino.Models
     {
         public Client()
         {
-            Adresses = new HashSet<Adress>();
-            Orders = new HashSet<Order>();
+            Adresses = new ObservableCollection<Adress>();
+            Orders = new ObservableCollection<Order>();
         }
 
         public string FirstName { get; set; }
@@ -21,12 +21,12 @@ namespace PizzaSanMorino.Models
         [SqlDefaultValue(DefaultValue = "DATETIME('now')")]
         public DateTime RegistrationDate { get; set; }
 
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
 
         public string PhoneNumber { get; set; }
 
-        public virtual ICollection<Adress> Adresses { get; set; }
+        public virtual ObservableCollection<Adress> Adresses { get; set; }
 
-        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ObservableCollection<Order> Orders { get; set; }
     }
 }
