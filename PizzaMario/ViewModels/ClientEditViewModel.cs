@@ -1,104 +1,95 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using PizzaMario.Models;
-using PizzaMario.Views;
 using Prism.Commands;
 
 namespace PizzaMario.ViewModels
 {
     public class ClientEditViewModel : ViewModelBase
     {
-        public event EventHandler CloseWindowEvent;
+        private DateTime? _birthDate;
 
-        public ICommand ClickSaveChangesCommand
-        {
-            get;
-        }
+        private readonly int _currentClientId;
 
-        public ICommand ClickCancelChangesCommand
-        {
-            get;
-        }
+        private string _firstName;
 
-        private int currentClientId;
+        private string _phoneNumber;
 
-        private string firstName;
-
-        public string FirstName
-        {
-            get { return firstName; }
-            set
-            {
-                firstName = value;
-                NotifyPropertyChanged();
-                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            }
-        }
-
-        private string secondName;
-
-        public string SecondName
-        {
-            get { return secondName; }
-            set
-            {
-                secondName = value;
-                NotifyPropertyChanged();
-                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            }
-        }
-
-        private string phoneNumber;
-
-        public string PhoneNumber
-        {
-            get { return phoneNumber; }
-            set
-            {
-                phoneNumber = value;
-                NotifyPropertyChanged();
-                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            }
-        }
-
-        private DateTime? birthDate;
-
-        public DateTime? BirthDate
-        {
-            get { return birthDate; }
-            set
-            {
-                birthDate = value;
-                NotifyPropertyChanged();
-                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            }
-        }
+        private string _secondName;
 
         public ClientEditViewModel(Client client)
         {
             if (client != null)
             {
-                currentClientId = client.Id;
+                _currentClientId = client.Id;
                 FirstName = client.FirstName;
                 SecondName = client.SecondName;
                 PhoneNumber = client.PhoneNumber;
                 BirthDate = client.BirthDate;
             }
+
             ClickSaveChangesCommand = new DelegateCommand(SaveChanges, CanSaveChanges);
             ClickCancelChangesCommand = new DelegateCommand(CancelChanges);
         }
+
+        public ICommand ClickSaveChangesCommand { get; }
+
+        public ICommand ClickCancelChangesCommand { get; }
+
+        public string FirstName
+        {
+            get => _firstName;
+            set
+            {
+                _firstName = value;
+                NotifyPropertyChanged();
+                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public string SecondName
+        {
+            get => _secondName;
+            set
+            {
+                _secondName = value;
+                NotifyPropertyChanged();
+                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public string PhoneNumber
+        {
+            get => _phoneNumber;
+            set
+            {
+                _phoneNumber = value;
+                NotifyPropertyChanged();
+                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public DateTime? BirthDate
+        {
+            get => _birthDate;
+            set
+            {
+                _birthDate = value;
+                NotifyPropertyChanged();
+                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public event EventHandler CloseWindowEvent;
 
         public void SaveChanges()
         {
             using (var context = new PizzaDbContext())
             {
-                if (currentClientId == 0)
+                if (_currentClientId == 0)
                 {
-                    context.Clients.Add(new Client()
+                    context.Clients.Add(new Client
                     {
                         FirstName = FirstName,
                         SecondName = SecondName,
@@ -109,7 +100,7 @@ namespace PizzaMario.ViewModels
                 }
                 else
                 {
-                    var client = context.Clients.First(x => x.Id == currentClientId);
+                    var client = context.Clients.First(x => x.Id == _currentClientId);
                     client.FirstName = FirstName;
                     client.SecondName = SecondName;
                     client.PhoneNumber = PhoneNumber;

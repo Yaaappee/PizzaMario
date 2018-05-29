@@ -1,255 +1,40 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Windows;
-using MvvmDialogs;
-using MvvmDialogs.FrameworkDialogs.OpenFile;
-using MvvmDialogs.FrameworkDialogs.SaveFile;
 using System.Windows.Input;
 using PizzaMario.Models;
-using PizzaMario.Utils;
 using PizzaMario.Views;
 using Prism.Commands;
 
 namespace PizzaMario.ViewModels
 {
-    class MainViewModel : ViewModelBase
+    internal class MainViewModel : ViewModelBase
     {
-        public ICommand ClickUpdateClientCommand
-        {
-            get;
-        }
-        public ICommand ClickDeleteClientCommand
-        {
-            get;
-        }
-        public ICommand ClickAddClientCommand
-        {
-            get;
-        }
-        public ICommand ClickUpdateMenuItemCommand
-        {
-            get;
-        }
-        public ICommand ClickDeleteMenuItemCommand
-        {
-            get;
-        }
-        public ICommand ClickAddMenuItemCommand
-        {
-            get;
-        }
-        public ICommand ClickDeleteOrderItemCommand
-        {
-            get;
-        }
-        public ICommand ClickAddOrderItemCommand
-        {
-            get;
-        }
-        public ICommand ClickUpdateOrderCommand
-        {
-            get;
-        }
-        public ICommand ClickDeleteOrderCommand
-        {
-            get;
-        }
-        public ICommand ClickAddOrderCommand
-        {
-            get;
-        }
+        private ObservableCollection<Client> _clients;
 
-        private ObservableCollection<Client> clients;
+        private Client _currentClient;
 
-        public ObservableCollection<Client> Clients
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(PhoneNumberToSearch))
-                    return clients;
-                else
-                    return new ObservableCollection<Client>(clients.Where(x => x.PhoneNumber.Contains(PhoneNumberToSearch)));
-            }
-            set
-            {
-                clients = value;
-                NotifyPropertyChanged();
-            }
-        }
+        private MenuItem _currentMenuItem;
 
-        private Client currentClient;
+        private Order _currentOrder;
 
-        public Client CurrentClient
-        {
-            get { return currentClient; }
-            set
-            {
-                if (value == currentClient) return;
-                currentClient = value;
-                NotifyPropertyChanged("CurrentClient");
-                (ClickUpdateClientCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-                (ClickDeleteClientCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            }
-        }
+        private OrderItem _currentOrderItem;
 
-        private string phoneNumberToSearch;
+        private string _menuItemNameToSearch;
 
-        public string PhoneNumberToSearch
-        {
-            get { return phoneNumberToSearch; }
-            set
-            {
-                phoneNumberToSearch = value;
-                NotifyPropertyChanged();
-                NotifyPropertyChanged("Clients");
-            }
-        }
+        private ObservableCollection<MenuItem> _menuItems;
 
-        private ObservableCollection<MenuItem> menuItems;
+        private Order _order;
 
-        public ObservableCollection<MenuItem> MenuItems
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(menuItemNameToSearch))
-                    return menuItems;
-                else
-                    return new ObservableCollection<MenuItem>(menuItems.Where(x => x.Name.ToLower().Contains(MenuItemNameToSearch.ToLower())));
-            }
-            set
-            {
-                menuItems = value;
-                NotifyPropertyChanged();
-            }
-        }
+        private string _orderClientNumberToSearch;
 
-        private MenuItem currentMenuItem;
+        private ObservableCollection<OrderItem> _orderItems;
 
-        public MenuItem CurrentMenuItem
-        {
-            get { return currentMenuItem; }
-            set
-            {
-                currentMenuItem = value;
-                NotifyPropertyChanged();
-                (ClickUpdateMenuItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-                (ClickDeleteMenuItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-                (ClickAddOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            }
-        }
+        private ObservableCollection<Order> _orders;
 
-        private Order order;
+        private string _phoneNumberToSearch;
 
-        public Order Order
-        {
-            get { return order; }
-            set
-            {
-                order = value;
-                NotifyPropertyChanged();
-                (ClickAddOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            }
-        }
-
-        private Order currentOrder;
-
-        public Order CurrentOrder
-        {
-            get { return currentOrder; }
-            set
-            {
-                currentOrder = value;
-                NotifyPropertyChanged();
-                (ClickUpdateOrderCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-                (ClickDeleteOrderCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            }
-        }
-
-        private ObservableCollection<Order> orders;
-
-        public ObservableCollection<Order> Orders
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(OrderClientNumberToSearch))
-                    return orders;
-                else
-                    return new ObservableCollection<Order>(orders.Where(x => x.Client.PhoneNumber.Contains(OrderClientNumberToSearch)));
-            }
-            set
-            {
-                orders = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private ObservableCollection<OrderItem> orderItems;
-
-        public ObservableCollection<OrderItem> OrderItems
-        {
-            get
-            {
-                return orderItems;
-            }
-            set
-            {
-                orderItems = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private OrderItem currentOrderItem;
-
-        public OrderItem CurrentOrderItem
-        {
-            get { return currentOrderItem; }
-            set
-            {
-                currentOrderItem = value;
-                NotifyPropertyChanged();
-                (ClickDeleteOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            }
-        }
-
-        private string orderClientNumberToSearch;
-
-        public string OrderClientNumberToSearch
-        {
-            get { return orderClientNumberToSearch; }
-            set
-            {
-                orderClientNumberToSearch = value;
-                NotifyPropertyChanged();
-                NotifyPropertyChanged("Orders");
-            }
-        }
-
-        private string menuItemNameToSearch;
-
-        public string MenuItemNameToSearch
-        {
-            get { return menuItemNameToSearch; }
-            set
-            {
-                menuItemNameToSearch = value;
-                NotifyPropertyChanged();
-                NotifyPropertyChanged("MenuItems");
-            }
-        }
-
-        private int tabIndex = 0;
-
-        public int TabIndex
-        {
-            get { return tabIndex; }
-            set
-            {
-                tabIndex = value;
-                NotifyPropertyChanged();
-            }
-        }
+        private int _tabIndex;
 
         public MainViewModel()
         {
@@ -269,15 +54,198 @@ namespace PizzaMario.ViewModels
             ClickAddOrderItemCommand = new DelegateCommand(AddOrderItem, CanAddOrderItem);
         }
 
+        public ICommand ClickUpdateClientCommand { get; }
+
+        public ICommand ClickDeleteClientCommand { get; }
+
+        public ICommand ClickAddClientCommand { get; }
+
+        public ICommand ClickUpdateMenuItemCommand { get; }
+
+        public ICommand ClickDeleteMenuItemCommand { get; }
+
+        public ICommand ClickAddMenuItemCommand { get; }
+
+        public ICommand ClickDeleteOrderItemCommand { get; }
+
+        public ICommand ClickAddOrderItemCommand { get; }
+
+        public ICommand ClickUpdateOrderCommand { get; }
+
+        public ICommand ClickDeleteOrderCommand { get; }
+
+        public ICommand ClickAddOrderCommand { get; }
+
+        public ObservableCollection<Client> Clients
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(PhoneNumberToSearch))
+                    return _clients;
+                return new ObservableCollection<Client>(_clients.Where(x =>
+                    x.PhoneNumber.Contains(PhoneNumberToSearch)));
+            }
+            set
+            {
+                _clients = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public Client CurrentClient
+        {
+            get => _currentClient;
+            set
+            {
+                if (value == _currentClient) return;
+                _currentClient = value;
+                NotifyPropertyChanged();
+                (ClickUpdateClientCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+                (ClickDeleteClientCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public string PhoneNumberToSearch
+        {
+            get => _phoneNumberToSearch;
+            set
+            {
+                _phoneNumberToSearch = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("Clients");
+            }
+        }
+
+        public ObservableCollection<MenuItem> MenuItems
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_menuItemNameToSearch))
+                    return _menuItems;
+                return new ObservableCollection<MenuItem>(_menuItems.Where(x =>
+                    x.Name.ToLower().Contains(MenuItemNameToSearch.ToLower())));
+            }
+            set
+            {
+                _menuItems = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public MenuItem CurrentMenuItem
+        {
+            get => _currentMenuItem;
+            set
+            {
+                _currentMenuItem = value;
+                NotifyPropertyChanged();
+                (ClickUpdateMenuItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+                (ClickDeleteMenuItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+                (ClickAddOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public Order Order
+        {
+            get => _order;
+            set
+            {
+                _order = value;
+                NotifyPropertyChanged();
+                (ClickAddOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public Order CurrentOrder
+        {
+            get => _currentOrder;
+            set
+            {
+                _currentOrder = value;
+                NotifyPropertyChanged();
+                (ClickUpdateOrderCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+                (ClickDeleteOrderCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public ObservableCollection<Order> Orders
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(OrderClientNumberToSearch))
+                    return _orders;
+                return new ObservableCollection<Order>(_orders.Where(x =>
+                    x.Client.PhoneNumber.Contains(OrderClientNumberToSearch)));
+            }
+            set
+            {
+                _orders = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<OrderItem> OrderItems
+        {
+            get => _orderItems;
+            set
+            {
+                _orderItems = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public OrderItem CurrentOrderItem
+        {
+            get => _currentOrderItem;
+            set
+            {
+                _currentOrderItem = value;
+                NotifyPropertyChanged();
+                (ClickDeleteOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public string OrderClientNumberToSearch
+        {
+            get => _orderClientNumberToSearch;
+            set
+            {
+                _orderClientNumberToSearch = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("Orders");
+            }
+        }
+
+        public string MenuItemNameToSearch
+        {
+            get => _menuItemNameToSearch;
+            set
+            {
+                _menuItemNameToSearch = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("MenuItems");
+            }
+        }
+
+        public int TabIndex
+        {
+            get => _tabIndex;
+            set
+            {
+                _tabIndex = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public void LoadClients()
         {
             using (var context = new PizzaDbContext())
             {
                 if (Clients == null)
-                    clients = new ObservableCollection<Client>();
+                    _clients = new ObservableCollection<Client>();
                 else
-                    clients.Clear();
-                clients.AddRange(context.Clients);
+                    _clients.Clear();
+                _clients.AddRange(context.Clients);
                 NotifyPropertyChanged("Clients");
             }
         }
@@ -326,10 +294,10 @@ namespace PizzaMario.ViewModels
             using (var context = new PizzaDbContext())
             {
                 if (MenuItems == null)
-                    menuItems = new ObservableCollection<MenuItem>();
+                    _menuItems = new ObservableCollection<MenuItem>();
                 else
-                    menuItems.Clear();
-                menuItems.AddRange(context.MenuItems.Include(x => x.Category));
+                    _menuItems.Clear();
+                _menuItems.AddRange(context.MenuItems.Include(x => x.Category));
                 NotifyPropertyChanged("MenuItems");
             }
         }
@@ -378,10 +346,10 @@ namespace PizzaMario.ViewModels
             using (var context = new PizzaDbContext())
             {
                 if (Orders == null)
-                    orders = new ObservableCollection<Order>();
+                    _orders = new ObservableCollection<Order>();
                 else
-                    orders.Clear();
-                orders.AddRange(context.Orders.Include(x => x.Client));
+                    _orders.Clear();
+                _orders.AddRange(context.Orders.Include(x => x.Client));
                 NotifyPropertyChanged("Orders");
             }
         }
@@ -392,6 +360,7 @@ namespace PizzaMario.ViewModels
             {
                 Order = context.Orders.Include(x => x.Client).FirstOrDefault(x => x.Id == CurrentOrder.Id);
             }
+
             TabIndex = 1;
             LoadOrderItems();
         }
@@ -438,21 +407,18 @@ namespace PizzaMario.ViewModels
         public void LoadOrderItems()
         {
             if (Order.Id > 0)
-            {
                 using (var context = new PizzaDbContext())
                 {
-                    OrderItems = new ObservableCollection<OrderItem>(context.OrderItems.Include(x => x.MenuItem).Where(x => x.OrderId == Order.Id));
+                    OrderItems = new ObservableCollection<OrderItem>(context.OrderItems.Include(x => x.MenuItem)
+                        .Where(x => x.OrderId == Order.Id));
                 }
-            }
             else
-            {
                 OrderItems = new ObservableCollection<OrderItem>();
-            }
         }
 
         public void AddOrderItem()
         {
-            OrderItems.Add(new OrderItem()
+            OrderItems.Add(new OrderItem
             {
                 MenuItem = CurrentMenuItem,
                 MenuItemId = CurrentMenuItem.Id,
@@ -473,7 +439,6 @@ namespace PizzaMario.ViewModels
 
         public bool CanDeleteOrderItem()
         {
-
             return Order != null && CurrentOrderItem != null;
         }
     }

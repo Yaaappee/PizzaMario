@@ -8,23 +8,24 @@ namespace PizzaMario.Models
     {
         public PizzaDbInitializer(DbModelBuilder modelBuilder)
             : base(modelBuilder)
-        { }
+        {
+        }
 
         protected override void Seed(PizzaDbContext context)
         {
-            var categoryPizza = new Category()
+            var categoryPizza = new Category
             {
                 Id = 1,
                 Name = "Pizza"
             };
 
-            var categoryDrinks = new Category()
+            var categoryDrinks = new Category
             {
                 Id = 2,
                 Name = "Drinks"
             };
 
-            var menuItemPizzaMargarita = new MenuItem()
+            var menuItemPizzaMargarita = new MenuItem
             {
                 Id = 1,
                 CategoryId = categoryPizza.Id,
@@ -32,7 +33,7 @@ namespace PizzaMario.Models
                 Price = 80.99
             };
 
-            var menuItemPizzaBbq = new MenuItem()
+            var menuItemPizzaBbq = new MenuItem
             {
                 Id = 2,
                 CategoryId = categoryPizza.Id,
@@ -40,7 +41,7 @@ namespace PizzaMario.Models
                 Price = 102.99
             };
 
-            var menuItemFiveCheese = new MenuItem()
+            var menuItemFiveCheese = new MenuItem
             {
                 Id = 3,
                 CategoryId = categoryPizza.Id,
@@ -48,7 +49,7 @@ namespace PizzaMario.Models
                 Price = 153.99
             };
 
-            var menuItemCola = new MenuItem()
+            var menuItemCola = new MenuItem
             {
                 Id = 4,
                 CategoryId = categoryDrinks.Id,
@@ -56,7 +57,7 @@ namespace PizzaMario.Models
                 Price = 14.99
             };
 
-            var menuItemPepsi = new MenuItem()
+            var menuItemPepsi = new MenuItem
             {
                 Id = 5,
                 CategoryId = categoryDrinks.Id,
@@ -64,7 +65,7 @@ namespace PizzaMario.Models
                 Price = 13.99
             };
 
-            var menuItemJuice = new MenuItem()
+            var menuItemJuice = new MenuItem
             {
                 Id = 6,
                 CategoryId = categoryDrinks.Id,
@@ -72,7 +73,7 @@ namespace PizzaMario.Models
                 Price = 10.99
             };
 
-            var menuItemAmerican = new MenuItem()
+            var menuItemAmerican = new MenuItem
             {
                 Id = 7,
                 CategoryId = categoryPizza.Id,
@@ -80,7 +81,7 @@ namespace PizzaMario.Models
                 Price = 111.99
             };
 
-            var menuItemTuna = new MenuItem()
+            var menuItemTuna = new MenuItem
             {
                 Id = 8,
                 CategoryId = categoryPizza.Id,
@@ -88,7 +89,7 @@ namespace PizzaMario.Models
                 Price = 181.99
             };
 
-            var clientIhor = new Client()
+            var clientIhor = new Client
             {
                 Id = 1,
                 FirstName = "Ihor",
@@ -97,7 +98,7 @@ namespace PizzaMario.Models
                 PhoneNumber = "+380991234567"
             };
 
-            var adressIhor1 = new Adress()
+            var adressIhor1 = new Adress
             {
                 Id = 1,
                 City = "Kiev",
@@ -107,7 +108,7 @@ namespace PizzaMario.Models
                 ClientId = clientIhor.Id
             };
 
-            var adressIhor2 = new Adress()
+            var adressIhor2 = new Adress
             {
                 Id = 2,
                 City = "Kiev",
@@ -117,7 +118,7 @@ namespace PizzaMario.Models
                 ClientId = clientIhor.Id
             };
 
-            var clientEvgeniy = new Client()
+            var clientEvgeniy = new Client
             {
                 Id = 2,
                 FirstName = "Evgeniy",
@@ -126,7 +127,7 @@ namespace PizzaMario.Models
                 PhoneNumber = "+380997654321"
             };
 
-            var adressEvgeniy1 = new Adress()
+            var adressEvgeniy1 = new Adress
             {
                 Id = 3,
                 City = "Kiev",
@@ -144,7 +145,7 @@ namespace PizzaMario.Models
                 TotalPrice = menuItemFiveCheese.Price + menuItemCola.Price * 2
             };
 
-            var order1Item1 = new OrderItem()
+            var order1Item1 = new OrderItem
             {
                 Id = 1,
                 MenuItemId = menuItemFiveCheese.Id,
@@ -152,14 +153,14 @@ namespace PizzaMario.Models
                 Quantity = 1
             };
 
-            var order1Item2 = new OrderItem()
+            var order1Item2 = new OrderItem
             {
                 Id = 2,
                 MenuItemId = menuItemCola.Id,
                 OrderId = order1.Id,
                 Quantity = 2
             };
-            
+
             var order2 = new Order
             {
                 Id = 2,
@@ -168,7 +169,7 @@ namespace PizzaMario.Models
                 TotalPrice = menuItemTuna.Price + menuItemPizzaBbq.Price + menuItemPepsi.Price + menuItemJuice.Price
             };
 
-            var order2Item1 = new OrderItem()
+            var order2Item1 = new OrderItem
             {
                 Id = 3,
                 MenuItemId = menuItemTuna.Id,
@@ -176,7 +177,7 @@ namespace PizzaMario.Models
                 Quantity = 1
             };
 
-            var order2Item2 = new OrderItem()
+            var order2Item2 = new OrderItem
             {
                 Id = 4,
                 MenuItemId = menuItemPizzaBbq.Id,
@@ -184,7 +185,7 @@ namespace PizzaMario.Models
                 Quantity = 1
             };
 
-            var order2Item3 = new OrderItem()
+            var order2Item3 = new OrderItem
             {
                 Id = 5,
                 MenuItemId = menuItemPepsi.Id,
@@ -192,7 +193,7 @@ namespace PizzaMario.Models
                 Quantity = 1
             };
 
-            var order2Item4 = new OrderItem()
+            var order2Item4 = new OrderItem
             {
                 Id = 6,
                 MenuItemId = menuItemJuice.Id,
@@ -200,23 +201,27 @@ namespace PizzaMario.Models
                 Quantity = 1
             };
 
-            context.Clients.AddRange(new[]{
+            context.Clients.AddRange(new[]
+            {
                 clientIhor,
                 clientEvgeniy
             });
 
-            context.Adresses.AddRange(new[]{
+            context.Adresses.AddRange(new[]
+            {
                 adressIhor1,
                 adressIhor2,
                 adressEvgeniy1
             });
-            
-            context.Categories.AddRange(new[]{
+
+            context.Categories.AddRange(new[]
+            {
                 categoryPizza,
                 categoryDrinks
             });
 
-            context.MenuItems.AddRange(new[]{
+            context.MenuItems.AddRange(new[]
+            {
                 menuItemPizzaMargarita,
                 menuItemPizzaBbq,
                 menuItemFiveCheese,

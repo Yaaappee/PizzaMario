@@ -4,6 +4,11 @@ namespace PizzaMario.Models
 {
     public class PizzaDbContext : DbContext
     {
+        public PizzaDbContext() : base("PizzaSqlLite")
+        {
+            Configure();
+        }
+
         public DbSet<Client> Clients { get; set; }
 
         public DbSet<Adress> Adresses { get; set; }
@@ -15,11 +20,6 @@ namespace PizzaMario.Models
         public DbSet<Order> Orders { get; set; }
 
         public DbSet<OrderItem> OrderItems { get; set; }
-
-        public PizzaDbContext() : base("PizzaSqlLite")
-        {
-            Configure();
-        }
 
         private void Configure()
         {

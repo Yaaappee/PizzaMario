@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using PizzaMario.Models;
 using Prism.Commands;
@@ -12,64 +9,15 @@ namespace PizzaMario.ViewModels
 {
     public class MenuItemEditViewModel : ViewModelBase
     {
-        public event EventHandler CloseWindowEvent;
+        private ObservableCollection<Category> _categories;
 
-        public ICommand ClickSaveChangesCommand { get; }
+        private Category _currentCategory;
 
-        public ICommand ClickCancelChangesCommand { get; }
+        private readonly int _currentMenuItemId;
 
-        private int currentMenuItemId;
+        private string _name;
 
-        private string name;
-
-        public string Name
-        {
-            get { return name; }
-            set
-            {
-                name = value;
-                NotifyPropertyChanged();
-                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            }
-        }
-
-        private Category currentCategory;
-
-        public Category CurrentCategory
-        {
-            get { return currentCategory; }
-            set
-            {
-                currentCategory = value;
-                NotifyPropertyChanged();
-                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            }
-        }
-
-        private ObservableCollection<Category> categories;
-
-        public ObservableCollection<Category> Categories
-        {
-            get { return categories; }
-            set
-            {
-                categories = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private double price;
-
-        public double Price
-        {
-            get { return price; }
-            set
-            {
-                price = value;
-                NotifyPropertyChanged();
-                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
-            }
-        }
+        private double _price;
 
         public MenuItemEditViewModel(MenuItem menuItem)
         {
@@ -80,7 +28,7 @@ namespace PizzaMario.ViewModels
 
             if (menuItem != null)
             {
-                currentMenuItemId = menuItem.Id;
+                _currentMenuItemId = menuItem.Id;
                 Name = menuItem.Name;
                 CurrentCategory = Categories.First(x => x.Id == menuItem.CategoryId);
                 Price = menuItem.Price;
@@ -90,13 +38,62 @@ namespace PizzaMario.ViewModels
             ClickCancelChangesCommand = new DelegateCommand(CancelChanges);
         }
 
+        public ICommand ClickSaveChangesCommand { get; }
+
+        public ICommand ClickCancelChangesCommand { get; }
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                NotifyPropertyChanged();
+                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public Category CurrentCategory
+        {
+            get => _currentCategory;
+            set
+            {
+                _currentCategory = value;
+                NotifyPropertyChanged();
+                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public ObservableCollection<Category> Categories
+        {
+            get => _categories;
+            set
+            {
+                _categories = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public double Price
+        {
+            get => _price;
+            set
+            {
+                _price = value;
+                NotifyPropertyChanged();
+                (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public event EventHandler CloseWindowEvent;
+
         public void SaveChanges()
         {
             using (var context = new PizzaDbContext())
             {
-                if (currentMenuItemId == 0)
+                if (_currentMenuItemId == 0)
                 {
-                    context.MenuItems.Add(new MenuItem()
+                    context.MenuItems.Add(new MenuItem
                     {
                         Name = Name,
                         Price = Price,
@@ -106,7 +103,7 @@ namespace PizzaMario.ViewModels
                 }
                 else
                 {
-                    var menuItem = context.MenuItems.First(x => x.Id == currentMenuItemId);
+                    var menuItem = context.MenuItems.First(x => x.Id == _currentMenuItemId);
                     menuItem.Name = Name;
                     menuItem.Price = Price;
                     menuItem.CategoryId = CurrentCategory.Id;

@@ -5,37 +5,40 @@ namespace PizzaMario.Utils
 {
     public class RelayCommand : ICommand
     {
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-        private Action methodToExecute;
-        private Func<bool> canExecuteEvaluator;
+        private readonly Func<bool> _canExecuteEvaluator;
+        private readonly Action _methodToExecute;
+
         public RelayCommand(Action methodToExecute, Func<bool> canExecuteEvaluator)
         {
-            this.methodToExecute = methodToExecute;
-            this.canExecuteEvaluator = canExecuteEvaluator;
+            this._methodToExecute = methodToExecute;
+            this._canExecuteEvaluator = canExecuteEvaluator;
         }
+
         public RelayCommand(Action methodToExecute)
             : this(methodToExecute, null)
         {
         }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
+
         public bool CanExecute(object parameter)
         {
-            if (this.canExecuteEvaluator == null)
+            if (_canExecuteEvaluator == null)
             {
                 return true;
             }
-            else
-            {
-                bool result = this.canExecuteEvaluator.Invoke();
-                return result;
-            }
+
+            var result = _canExecuteEvaluator.Invoke();
+            return result;
         }
+
         public void Execute(object parameter)
         {
-            this.methodToExecute.Invoke();
+            _methodToExecute.Invoke();
         }
     }
 
@@ -43,15 +46,15 @@ namespace PizzaMario.Utils
     {
         #region Fields
 
-        private readonly Action<T> _execute = null;
-        private readonly Predicate<T> _canExecute = null;
+        private readonly Action<T> _execute;
+        private readonly Predicate<T> _canExecute;
 
         #endregion
 
         #region Constructors
 
         /// <summary>
-        /// Creates a new command that can always execute.
+        ///     Creates a new command that can always execute.
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         public RelayCommand(Action<T> execute)
@@ -60,7 +63,7 @@ namespace PizzaMario.Utils
         }
 
         /// <summary>
-        /// Creates a new command with conditional execution.
+        ///     Creates a new command with conditional execution.
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         /// <param name="canExecute">The execution status logic.</param>
@@ -79,7 +82,7 @@ namespace PizzaMario.Utils
 
         public bool CanExecute(object parameter)
         {
-            return _canExecute == null ? true : _canExecute((T)parameter);
+            return _canExecute == null ? true : _canExecute((T) parameter);
         }
 
         public event EventHandler CanExecuteChanged
@@ -98,7 +101,7 @@ namespace PizzaMario.Utils
 
         public void Execute(object parameter)
         {
-            _execute((T)parameter);
+            _execute((T) parameter);
         }
 
         #endregion
