@@ -8,9 +8,8 @@ namespace PizzaMario.ViewModels
 {
     public class ClientEditViewModel : ViewModelBase
     {
-        private DateTime? _birthDate;
-
         private readonly int _currentClientId;
+        private DateTime? _birthDate;
 
         private string _firstName;
 

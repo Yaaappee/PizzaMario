@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Windows.Input;
 using PizzaMario.Models;
@@ -35,13 +36,13 @@ namespace PizzaMario.ViewModels
 
         private string _phoneNumberToSearch;
 
-        private int _tabIndex;
-
-        private bool _wasCalculated;
-
         private double _resultSum;
 
         private string _summaryText;
+
+        private int _tabIndex;
+
+        private bool _wasCalculated;
 
         public MainViewModel()
         {
@@ -61,6 +62,8 @@ namespace PizzaMario.ViewModels
             ClickAddOrderItemCommand = new DelegateCommand(AddOrderItem, CanAddOrderItem);
             ClickCalculateOrderButton = new DelegateCommand(CalculateOrder, CanCalculateOrder);
             ClickSubmitOrderButton = new DelegateCommand(SubmitOrder, CanSubmitOrder);
+            ClickDeleteCountOrderItemCommand = new DelegateCommand(DeleteCountOrderItem, CanDeleteCountOrderItem);
+            ClickAddCountOrderItemCommand = new DelegateCommand(AddCountOrderItem, CanAddCountOrderItem);
         }
 
         public ICommand ClickUpdateClientCommand { get; }
@@ -78,6 +81,10 @@ namespace PizzaMario.ViewModels
         public ICommand ClickDeleteOrderItemCommand { get; }
 
         public ICommand ClickAddOrderItemCommand { get; }
+
+        public ICommand ClickDeleteCountOrderItemCommand { get; }
+
+        public ICommand ClickAddCountOrderItemCommand { get; }
 
         public ICommand ClickUpdateOrderCommand { get; }
 
@@ -220,6 +227,8 @@ namespace PizzaMario.ViewModels
                 _currentOrderItem = value;
                 NotifyPropertyChanged();
                 (ClickDeleteOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+                (ClickDeleteCountOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+                (ClickAddCountOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
             }
         }
 
@@ -477,15 +486,45 @@ namespace PizzaMario.ViewModels
 
         public void AddOrderItem()
         {
-            OrderItems.Add(new OrderItem
+            var orderItem = OrderItems.FirstOrDefault(x => x.MenuItemId == CurrentMenuItem.Id && x.OrderId == Order.Id);
+            if (orderItem == null)
             {
-                MenuItem = CurrentMenuItem,
-                MenuItemId = CurrentMenuItem.Id,
-                Order = Order,
-                OrderId = Order.Id
-            });
-            NotifyPropertyChanged("IfMenuItemsChoosed");
-            WasCalculated = false;
+                OrderItems.Add(new OrderItem
+                {
+                    MenuItem = CurrentMenuItem,
+                    MenuItemId = CurrentMenuItem.Id,
+                    Order = Order,
+                    OrderId = Order.Id
+                });
+                NotifyPropertyChanged("IfMenuItemsChoosed");
+                WasCalculated = false;
+            }
+        }
+
+        public void AddCountOrderItem()
+        {
+            CurrentOrderItem.Quantity++;
+            (ClickDeleteCountOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            (ClickAddCountOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            OrderItems = new ObservableCollection<OrderItem>(OrderItems);
+        }
+
+        public void DeleteCountOrderItem()
+        {
+            CurrentOrderItem.Quantity--;
+            (ClickDeleteCountOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            (ClickAddCountOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            OrderItems = new ObservableCollection<OrderItem>(OrderItems);
+        }
+
+        public bool CanAddCountOrderItem()
+        {
+            return CurrentOrderItem != null;
+        }
+
+        public bool CanDeleteCountOrderItem()
+        {
+            return CurrentOrderItem != null && CurrentOrderItem.Quantity > 1;
         }
 
         public bool CanAddOrderItem()
@@ -518,7 +557,7 @@ namespace PizzaMario.ViewModels
         public void CalculateOrder()
         {
             ResultSum = 0;
-            bool wasDiscounts = false;
+            var wasDiscounts = false;
             SummaryText = string.Empty;
 
             SummaryText += "Client Info:" + Environment.NewLine;
@@ -531,10 +570,11 @@ namespace PizzaMario.ViewModels
             SummaryText += new string('=', 30) + Environment.NewLine;
             foreach (var orderItem in OrderItems)
             {
-                double productPrice = orderItem.Quantity * orderItem.MenuItem.Price;
+                var productPrice = orderItem.Quantity * orderItem.MenuItem.Price;
                 if (orderItem.Quantity >= 10)
                 {
-                    SummaryText += $"| {orderItem.MenuItem.Name} x{orderItem.Quantity} = {(productPrice * 0.95):0.00} ({productPrice} - 5% discount *)";
+                    SummaryText +=
+                        $"| {orderItem.MenuItem.Name} x{orderItem.Quantity} = {productPrice * 0.95:0.00} ({productPrice} - 5% discount *)";
                     ResultSum += productPrice * 0.95;
                     wasDiscounts = true;
                 }
@@ -546,12 +586,13 @@ namespace PizzaMario.ViewModels
 
                 SummaryText += Environment.NewLine;
             }
+
             SummaryText += new string('=', 30) + Environment.NewLine;
             SummaryText += $"Total sum: {ResultSum}" + Environment.NewLine;
             SummaryText += Environment.NewLine;
             if (ResultSum >= 1000)
             {
-                SummaryText += $"RESULT SUM: {(ResultSum * 0.95):0.00} ({ResultSum:0.00} - 5% discount **)";
+                SummaryText += $"RESULT SUM: {ResultSum * 0.95:0.00} ({ResultSum:0.00} - 5% discount **)";
                 ResultSum *= 0.95;
                 wasDiscounts = true;
             }
@@ -570,15 +611,62 @@ namespace PizzaMario.ViewModels
                 SummaryText += "** - if total sum is more than 1000" + Environment.NewLine;
                 SummaryText += "     then we reduce total sum by 5%" + Environment.NewLine;
             }
+
             WasCalculated = true;
             (ClickSubmitOrderButton as DelegateCommand)?.RaiseCanExecuteChanged();
         }
 
         public void SubmitOrder()
         {
+            if (CurrentOrder == null)
+            {
+                using (var context = new PizzaDbContext())
+                {
+                    Order.TotalPrice = ResultSum;
+                    Order.Client = CurrentClient;
+                    Order.ClientId = CurrentClient.Id;
+                    context.Orders.Add(Order);
+                    context.OrderItems.AddRange(OrderItems);
+                    context.SaveChanges();
+                }
+            }
+            else
+            {
+                using (var context = new PizzaDbContext())
+                {
+                    Order.TotalPrice = ResultSum;
+                    var orderId = Order.Id;
+                    if (context.Orders.Any(e => e.Id == orderId))
+                    {
+                        context.Orders.Attach(Order);
+                        context.Entry(Order).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        context.Orders.Add(Order);
+                    }
+
+                    var dbOrderItems = context.OrderItems.Where(x => x.OrderId == Order.Id).ToList();
+                    foreach (var orderItem in OrderItems)
+                    {
+                        context.OrderItems.AddOrUpdate(orderItem);
+                    }
+
+                    foreach (var dbOrderItem in dbOrderItems)
+                    {
+                        if (OrderItems.All(e => e.Id != dbOrderItem.Id))
+                        {
+                            context.OrderItems.Remove(dbOrderItem);
+                        }
+                    }
+
+                    context.SaveChanges();
+                }
+            }
             CurrentOrder = null;
             Order = new Order();
             TabIndex = 0;
+            LoadOrders();
         }
     }
 }

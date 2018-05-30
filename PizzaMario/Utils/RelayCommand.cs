@@ -10,8 +10,8 @@ namespace PizzaMario.Utils
 
         public RelayCommand(Action methodToExecute, Func<bool> canExecuteEvaluator)
         {
-            this._methodToExecute = methodToExecute;
-            this._canExecuteEvaluator = canExecuteEvaluator;
+            _methodToExecute = methodToExecute;
+            _canExecuteEvaluator = canExecuteEvaluator;
         }
 
         public RelayCommand(Action methodToExecute)
@@ -27,10 +27,7 @@ namespace PizzaMario.Utils
 
         public bool CanExecute(object parameter)
         {
-            if (_canExecuteEvaluator == null)
-            {
-                return true;
-            }
+            if (_canExecuteEvaluator == null) return true;
 
             var result = _canExecuteEvaluator.Invoke();
             return result;

@@ -4,7 +4,7 @@ using SQLite.CodeFirst;
 
 namespace PizzaMario.Models
 {
-    public class PizzaDbInitializer : SqliteDropCreateDatabaseAlways<PizzaDbContext>
+    public class PizzaDbInitializer : SqliteDropCreateDatabaseWhenModelChanges<PizzaDbContext>
     {
         public PizzaDbInitializer(DbModelBuilder modelBuilder)
             : base(modelBuilder)

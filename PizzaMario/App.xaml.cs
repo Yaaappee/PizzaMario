@@ -20,6 +20,9 @@ namespace PizzaMario
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            var resourceDictionary = LoadComponent(new Uri("./Resources/Theme.xaml", UriKind.Relative)) as ResourceDictionary;
+            Current.Resources.MergedDictionaries.Clear();
+            Current.Resources.MergedDictionaries.Add(resourceDictionary);
             Thread.CurrentThread.CurrentCulture = new CultureInfo("uk-UA");
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
             Log.Info("Application Startup");
@@ -59,8 +62,7 @@ namespace PizzaMario
                 "Oops, something went wrong and the application must close. Please find a " +
                 "report on the issue at: " + path + Environment.NewLine +
                 "If the problem persist, please contact isoko.",
-                "Unhandled Error",
-                MessageBoxButton.OK);
+                "Unhandled Error");
 
             var e = (Exception) args.ExceptionObject;
             Log.Fatal("Application has crashed", e);

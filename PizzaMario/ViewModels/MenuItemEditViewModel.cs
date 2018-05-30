@@ -9,11 +9,10 @@ namespace PizzaMario.ViewModels
 {
     public class MenuItemEditViewModel : ViewModelBase
     {
+        private readonly int _currentMenuItemId;
         private ObservableCollection<Category> _categories;
 
         private Category _currentCategory;
-
-        private readonly int _currentMenuItemId;
 
         private string _name;
 
