@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Windows.Input;
@@ -36,6 +37,12 @@ namespace PizzaMario.ViewModels
 
         private int _tabIndex;
 
+        private bool _wasCalculated;
+
+        private double _resultSum;
+
+        private string _summaryText;
+
         public MainViewModel()
         {
             LoadOrders();
@@ -52,6 +59,8 @@ namespace PizzaMario.ViewModels
             ClickAddOrderCommand = new DelegateCommand(AddOrder);
             ClickDeleteOrderItemCommand = new DelegateCommand(DeleteOrderItem, CanDeleteOrderItem);
             ClickAddOrderItemCommand = new DelegateCommand(AddOrderItem, CanAddOrderItem);
+            ClickCalculateOrderButton = new DelegateCommand(CalculateOrder, CanCalculateOrder);
+            ClickSubmitOrderButton = new DelegateCommand(SubmitOrder, CanSubmitOrder);
         }
 
         public ICommand ClickUpdateClientCommand { get; }
@@ -75,6 +84,10 @@ namespace PizzaMario.ViewModels
         public ICommand ClickDeleteOrderCommand { get; }
 
         public ICommand ClickAddOrderCommand { get; }
+
+        public ICommand ClickCalculateOrderButton { get; }
+
+        public ICommand ClickSubmitOrderButton { get; }
 
         public ObservableCollection<Client> Clients
         {
@@ -102,6 +115,7 @@ namespace PizzaMario.ViewModels
                 NotifyPropertyChanged("IfClientChoosed");
                 (ClickUpdateClientCommand as DelegateCommand)?.RaiseCanExecuteChanged();
                 (ClickDeleteClientCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+                WasCalculated = false;
             }
         }
 
@@ -154,6 +168,7 @@ namespace PizzaMario.ViewModels
                 NotifyPropertyChanged();
                 NotifyPropertyChanged("IfOrderChoosed");
                 (ClickAddOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+                WasCalculated = false;
             }
         }
 
@@ -193,6 +208,7 @@ namespace PizzaMario.ViewModels
                 _orderItems = value;
                 NotifyPropertyChanged();
                 NotifyPropertyChanged("IfMenuItemsChoosed");
+                (ClickCalculateOrderButton as DelegateCommand)?.RaiseCanExecuteChanged();
             }
         }
 
@@ -245,6 +261,38 @@ namespace PizzaMario.ViewModels
 
         public bool IfClientChoosed => CurrentClient != null;
 
+        public bool WasCalculated
+        {
+            get => _wasCalculated;
+            set
+            {
+                _wasCalculated = value;
+                NotifyPropertyChanged();
+                (ClickSubmitOrderButton as DelegateCommand)?.RaiseCanExecuteChanged();
+                (ClickCalculateOrderButton as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public double ResultSum
+        {
+            get => _resultSum;
+            set
+            {
+                _resultSum = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string SummaryText
+        {
+            get => _summaryText;
+            set
+            {
+                _summaryText = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public void LoadClients()
         {
             using (var context = new PizzaDbContext())
@@ -266,6 +314,8 @@ namespace PizzaMario.ViewModels
             app.DataContext = viewModel;
             app.ShowDialog();
             LoadClients();
+            WasCalculated = false;
+            (ClickCalculateOrderButton as DelegateCommand)?.RaiseCanExecuteChanged();
         }
 
         public bool CanUpdateClient()
@@ -281,6 +331,7 @@ namespace PizzaMario.ViewModels
             app.DataContext = viewModel;
             app.ShowDialog();
             LoadClients();
+            (ClickCalculateOrderButton as DelegateCommand)?.RaiseCanExecuteChanged();
         }
 
         public void DeleteClient()
@@ -318,6 +369,7 @@ namespace PizzaMario.ViewModels
             app.DataContext = viewModel;
             app.ShowDialog();
             LoadMenuItems();
+            WasCalculated = false;
         }
 
         public bool CanUpdateMenuItem()
@@ -333,6 +385,7 @@ namespace PizzaMario.ViewModels
             app.DataContext = viewModel;
             app.ShowDialog();
             LoadMenuItems();
+            WasCalculated = false;
         }
 
         public void DeleteMenuItem()
@@ -347,6 +400,7 @@ namespace PizzaMario.ViewModels
             }
 
             LoadMenuItems();
+            WasCalculated = false;
         }
 
         public void LoadOrders()
@@ -372,7 +426,7 @@ namespace PizzaMario.ViewModels
             TabIndex = 1;
             LoadOrderItems();
             CurrentClient = Clients[Clients.IndexOf(Clients.First(x => x.Id == CurrentOrder.Id))];
-            // TODO
+            WasCalculated = false;
         }
 
         public bool CanUpdateOrder()
@@ -392,15 +446,7 @@ namespace PizzaMario.ViewModels
 
             TabIndex = 1;
             LoadOrderItems();
-            // TODO
-        }
-
-        public void SubmitOrder()
-        {
-            CurrentOrder = null;
-            Order = new Order();
-            TabIndex = 0;
-            // TODO
+            WasCalculated = false;
         }
 
         public void DeleteOrder()
@@ -439,6 +485,7 @@ namespace PizzaMario.ViewModels
                 OrderId = Order.Id
             });
             NotifyPropertyChanged("IfMenuItemsChoosed");
+            WasCalculated = false;
         }
 
         public bool CanAddOrderItem()
@@ -450,11 +497,88 @@ namespace PizzaMario.ViewModels
         {
             OrderItems.Remove(CurrentOrderItem);
             NotifyPropertyChanged("IfMenuItemsChoosed");
+            WasCalculated = false;
         }
 
         public bool CanDeleteOrderItem()
         {
             return Order != null && CurrentOrderItem != null;
+        }
+
+        public bool CanCalculateOrder()
+        {
+            return Order != null && OrderItems != null && OrderItems.Count > 0 && CurrentClient != null;
+        }
+
+        public bool CanSubmitOrder()
+        {
+            return WasCalculated;
+        }
+
+        public void CalculateOrder()
+        {
+            ResultSum = 0;
+            bool wasDiscounts = false;
+            SummaryText = string.Empty;
+
+            SummaryText += "Client Info:" + Environment.NewLine;
+            SummaryText += new string('=', 30) + Environment.NewLine;
+            SummaryText += $"| Name: {CurrentClient.FirstName} {CurrentClient.SecondName}" + Environment.NewLine;
+            SummaryText += $"| Phone Number: {CurrentClient.PhoneNumber}" + Environment.NewLine;
+            SummaryText += new string('=', 30) + Environment.NewLine;
+            SummaryText += Environment.NewLine;
+            SummaryText += "Order Info:" + Environment.NewLine;
+            SummaryText += new string('=', 30) + Environment.NewLine;
+            foreach (var orderItem in OrderItems)
+            {
+                double productPrice = orderItem.Quantity * orderItem.MenuItem.Price;
+                if (orderItem.Quantity >= 10)
+                {
+                    SummaryText += $"| {orderItem.MenuItem.Name} x{orderItem.Quantity} = {(productPrice * 0.95):0.00} ({productPrice} - 5% discount *)";
+                    ResultSum += productPrice * 0.95;
+                    wasDiscounts = true;
+                }
+                else
+                {
+                    SummaryText += $"| {orderItem.MenuItem.Name} x{orderItem.Quantity} = {productPrice}";
+                    ResultSum += productPrice;
+                }
+
+                SummaryText += Environment.NewLine;
+            }
+            SummaryText += new string('=', 30) + Environment.NewLine;
+            SummaryText += $"Total sum: {ResultSum}" + Environment.NewLine;
+            SummaryText += Environment.NewLine;
+            if (ResultSum >= 1000)
+            {
+                SummaryText += $"RESULT SUM: {(ResultSum * 0.95):0.00} ({ResultSum:0.00} - 5% discount **)";
+                ResultSum *= 0.95;
+                wasDiscounts = true;
+            }
+            else
+            {
+                SummaryText += $"RESULT SUM: {ResultSum:0.00}";
+            }
+
+            ResultSum = Math.Round(ResultSum, 2, MidpointRounding.AwayFromZero);
+            if (wasDiscounts)
+            {
+                SummaryText += Environment.NewLine;
+                SummaryText += new string('-', 30) + Environment.NewLine;
+                SummaryText += "*  - if order item count is 10 or more" + Environment.NewLine;
+                SummaryText += "     then we reduce product price by 5%" + Environment.NewLine;
+                SummaryText += "** - if total sum is more than 1000" + Environment.NewLine;
+                SummaryText += "     then we reduce total sum by 5%" + Environment.NewLine;
+            }
+            WasCalculated = true;
+            (ClickSubmitOrderButton as DelegateCommand)?.RaiseCanExecuteChanged();
+        }
+
+        public void SubmitOrder()
+        {
+            CurrentOrder = null;
+            Order = new Order();
+            TabIndex = 0;
         }
     }
 }

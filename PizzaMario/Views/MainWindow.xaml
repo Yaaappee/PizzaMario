@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Icon="..\Resources\Icon.ico"
         Title="Mario Pizza" Height="550" Width="750" MinWidth="600" MinHeight="400"
-        WindowState="Normal">
+        WindowState="Normal" FontSize="14" FontFamily="{StaticResource Trebuchet}" >
 
 
     <Window.InputBindings>
@@ -179,20 +179,27 @@
             </TabItem>
             <TabItem Header="Summary" Width="100" Height="40" IsEnabled="{Binding IfClientChoosed}">
                 <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition Height="3*" />
+                        <RowDefinition Height="60" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
 
                     <Button Content="Calculate" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"
-                            HorizontalAlignment="Center" Height="50" Width="75" FontWeight="Bold"
-                            Command="{Binding ClickCalculateOrderButton}" />
-                    <Button Content="Submit" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center"
-                            HorizontalAlignment="Center" Height="50" Width="75" FontWeight="Bold"
-                            Command="{Binding ClickSubmitOrderButton}" />
-                    <TextBlock HorizontalAlignment="Stretch" Margin="5" Grid.Row="1" TextWrapping="WrapWithOverflow"
-                               Text="{Binding SummaryText}" VerticalAlignment="Stretch" />
+                            HorizontalAlignment="Left" Height="50" Width="75" FontWeight="Bold"
+                            Command="{Binding ClickCalculateOrderButton}" Margin="5,5,0,5" />
+                    <Button Content="Submit" Grid.Column="1" VerticalAlignment="Center"
+                            HorizontalAlignment="Right" Height="50" Width="75" FontWeight="Bold"
+                            Command="{Binding ClickSubmitOrderButton}" Margin="0,5,5.4,5" />
+                    <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto">
+                        <TextBlock TextWrapping="NoWrap" FontFamily="{StaticResource NotoMono}" 
+                               Text="{Binding SummaryText}" 
+                         />
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
         </TabControl>

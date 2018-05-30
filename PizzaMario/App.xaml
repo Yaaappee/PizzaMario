@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:PizzaMario"
              Startup="Application_Startup">
     <Application.Resources>
-
+        <FontFamily x:Key="Trebuchet">./Resources/Trebuchet.ttf#Trebuchet</FontFamily>
+        <FontFamily x:Key="NotoMono">./Resources/Noto Mono.ttf#Noto Mono</FontFamily>
     </Application.Resources>
 </Application>
