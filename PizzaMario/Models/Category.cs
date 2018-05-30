@@ -12,5 +12,10 @@ namespace PizzaMario.Models
         public string Name { get; set; }
 
         public virtual ObservableCollection<MenuItem> MenuItems { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

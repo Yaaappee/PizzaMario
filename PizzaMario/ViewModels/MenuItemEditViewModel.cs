@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using PizzaMario.Models;
+using PizzaMario.Views;
 using Prism.Commands;
 
 namespace PizzaMario.ViewModels
@@ -20,10 +22,7 @@ namespace PizzaMario.ViewModels
 
         public MenuItemEditViewModel(MenuItem menuItem)
         {
-            using (var context = new PizzaDbContext())
-            {
-                Categories = new ObservableCollection<Category>(context.Categories);
-            }
+            LoadCategories();
 
             if (menuItem != null)
             {
@@ -35,11 +34,20 @@ namespace PizzaMario.ViewModels
 
             ClickSaveChangesCommand = new DelegateCommand(SaveChanges, CanSaveChanges);
             ClickCancelChangesCommand = new DelegateCommand(CancelChanges);
+            ClickAddCategoryCommand = new DelegateCommand(AddCategory);
+            ClickUpdateCategoryCommand = new DelegateCommand(UpdateCategory, CanUpdateDeleteCategory);
+            ClickDeleteCategoryCommand = new DelegateCommand(DeleteCategory, CanUpdateDeleteCategory);
         }
 
         public ICommand ClickSaveChangesCommand { get; }
 
         public ICommand ClickCancelChangesCommand { get; }
+
+        public ICommand ClickUpdateCategoryCommand { get; }
+
+        public ICommand ClickDeleteCategoryCommand { get; }
+
+        public ICommand ClickAddCategoryCommand { get; }
 
         public string Name
         {
@@ -60,6 +68,9 @@ namespace PizzaMario.ViewModels
                 _currentCategory = value;
                 NotifyPropertyChanged();
                 (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+                (ClickAddCategoryCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+                (ClickUpdateCategoryCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+                (ClickDeleteCategoryCommand as DelegateCommand)?.RaiseCanExecuteChanged();
             }
         }
 
@@ -82,6 +93,69 @@ namespace PizzaMario.ViewModels
                 NotifyPropertyChanged();
                 (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
             }
+        }
+
+        private bool CanUpdateDeleteCategory()
+        {
+            return CurrentCategory != null;
+        }
+
+        private void LoadCategories()
+        {
+            using (var context = new PizzaDbContext())
+            {
+                var categories = new ObservableCollection<Category>(context.Categories);
+                if (Categories == null)
+                {
+                    Categories = categories;
+                }
+                else
+                {
+                    Categories.Clear();
+                    Categories.AddRange(categories);
+                }
+            }
+
+            (ClickAddCategoryCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            (ClickUpdateCategoryCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            (ClickDeleteCategoryCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+        }
+
+        private void DeleteCategory()
+        {
+            var result = MessageBox.Show("Are you sure?", "Delete category", MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+            if (result == MessageBoxResult.Yes)
+            {
+                using (var context = new PizzaDbContext())
+                {
+                    var cat = context.Categories.First(x => x.Id == CurrentCategory.Id);
+                    context.Categories.Remove(cat);
+                    context.SaveChanges();
+                }
+
+                LoadCategories();
+            }
+        }
+
+        private void UpdateCategory()
+        {
+            var viewModel = new CategoryEditViewModel(CurrentCategory);
+            var view = new CategoryEdit();
+            viewModel.CloseWindowEvent += (s, e) => view.Close();
+            view.DataContext = viewModel;
+            view.ShowDialog();
+            LoadCategories();
+        }
+
+        private void AddCategory()
+        {
+            var viewModel = new CategoryEditViewModel(null);
+            var view = new CategoryEdit();
+            viewModel.CloseWindowEvent += (s, e) => view.Close();
+            view.DataContext = viewModel;
+            view.ShowDialog();
+            LoadCategories();
         }
 
         public event EventHandler CloseWindowEvent;

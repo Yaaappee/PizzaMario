@@ -378,6 +378,7 @@ namespace PizzaMario.ViewModels
             app.DataContext = viewModel;
             app.ShowDialog();
             LoadMenuItems();
+            LoadOrderItems();
             WasCalculated = false;
         }
 
@@ -409,6 +410,7 @@ namespace PizzaMario.ViewModels
             }
 
             LoadMenuItems();
+            LoadOrderItems();
             WasCalculated = false;
         }
 
@@ -434,7 +436,7 @@ namespace PizzaMario.ViewModels
 
             TabIndex = 1;
             LoadOrderItems();
-            CurrentClient = Clients[Clients.IndexOf(Clients.First(x => x.Id == CurrentOrder.Id))];
+            CurrentClient = Clients[Clients.IndexOf(Clients.First(x => x.Id == CurrentOrder.ClientId))];
             WasCalculated = false;
         }
 
