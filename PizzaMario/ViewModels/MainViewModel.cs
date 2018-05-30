@@ -97,9 +97,9 @@ namespace PizzaMario.ViewModels
             get => _currentClient;
             set
             {
-                if (value == _currentClient) return;
                 _currentClient = value;
                 NotifyPropertyChanged();
+                NotifyPropertyChanged("IfClientChoosed");
                 (ClickUpdateClientCommand as DelegateCommand)?.RaiseCanExecuteChanged();
                 (ClickDeleteClientCommand as DelegateCommand)?.RaiseCanExecuteChanged();
             }
@@ -152,6 +152,7 @@ namespace PizzaMario.ViewModels
             {
                 _order = value;
                 NotifyPropertyChanged();
+                NotifyPropertyChanged("IfOrderChoosed");
                 (ClickAddOrderItemCommand as DelegateCommand)?.RaiseCanExecuteChanged();
             }
         }
@@ -191,6 +192,7 @@ namespace PizzaMario.ViewModels
             {
                 _orderItems = value;
                 NotifyPropertyChanged();
+                NotifyPropertyChanged("IfMenuItemsChoosed");
             }
         }
 
@@ -236,6 +238,12 @@ namespace PizzaMario.ViewModels
                 NotifyPropertyChanged();
             }
         }
+
+        public bool IfOrderChoosed => Order != null;
+
+        public bool IfMenuItemsChoosed => OrderItems != null && OrderItems.Count > 0;
+
+        public bool IfClientChoosed => CurrentClient != null;
 
         public void LoadClients()
         {
@@ -363,6 +371,8 @@ namespace PizzaMario.ViewModels
 
             TabIndex = 1;
             LoadOrderItems();
+            CurrentClient = Clients[Clients.IndexOf(Clients.First(x => x.Id == CurrentOrder.Id))];
+            // TODO
         }
 
         public bool CanUpdateOrder()
@@ -374,6 +384,7 @@ namespace PizzaMario.ViewModels
         {
             CurrentOrder = null;
             Order = new Order();
+            CurrentClient = null;
             using (var context = new PizzaDbContext())
             {
                 Order.Id = context.Orders.OrderByDescending(x => x.Id).First().Id + 1;
@@ -381,6 +392,7 @@ namespace PizzaMario.ViewModels
 
             TabIndex = 1;
             LoadOrderItems();
+            // TODO
         }
 
         public void SubmitOrder()
@@ -388,6 +400,7 @@ namespace PizzaMario.ViewModels
             CurrentOrder = null;
             Order = new Order();
             TabIndex = 0;
+            // TODO
         }
 
         public void DeleteOrder()
@@ -425,6 +438,7 @@ namespace PizzaMario.ViewModels
                 Order = Order,
                 OrderId = Order.Id
             });
+            NotifyPropertyChanged("IfMenuItemsChoosed");
         }
 
         public bool CanAddOrderItem()
@@ -435,6 +449,7 @@ namespace PizzaMario.ViewModels
         public void DeleteOrderItem()
         {
             OrderItems.Remove(CurrentOrderItem);
+            NotifyPropertyChanged("IfMenuItemsChoosed");
         }
 
         public bool CanDeleteOrderItem()

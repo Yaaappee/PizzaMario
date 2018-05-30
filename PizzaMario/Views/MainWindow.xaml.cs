@@ -1,6 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using log4net;
 
 namespace PizzaMario.Views
@@ -14,6 +16,7 @@ namespace PizzaMario.Views
 
         public MainWindow()
         {
+            //Icon = new BitmapImage(new Uri("Resources/Icon.ico", UriKind.Relative));
             InitializeComponent();
             Closing += MainView_Closing;
         }
