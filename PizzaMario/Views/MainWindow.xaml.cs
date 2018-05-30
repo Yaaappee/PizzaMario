@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
 using log4net;
@@ -15,7 +14,6 @@ namespace PizzaMario.Views
 
         public MainWindow()
         {
-
             InitializeComponent();
             Closing += MainView_Closing;
         }

@@ -20,7 +20,8 @@ namespace PizzaMario
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var resourceDictionary = LoadComponent(new Uri("./Resources/Theme.xaml", UriKind.Relative)) as ResourceDictionary;
+            var resourceDictionary =
+                LoadComponent(new Uri("./Resources/Theme.xaml", UriKind.Relative)) as ResourceDictionary;
             Current.Resources.MergedDictionaries.Clear();
             Current.Resources.MergedDictionaries.Add(resourceDictionary);
             Thread.CurrentThread.CurrentCulture = new CultureInfo("uk-UA");

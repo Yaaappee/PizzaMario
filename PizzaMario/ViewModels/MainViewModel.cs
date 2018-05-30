@@ -619,7 +619,6 @@ namespace PizzaMario.ViewModels
         public void SubmitOrder()
         {
             if (CurrentOrder == null)
-            {
                 using (var context = new PizzaDbContext())
                 {
                     Order.TotalPrice = ResultSum;
@@ -629,9 +628,7 @@ namespace PizzaMario.ViewModels
                     context.OrderItems.AddRange(OrderItems);
                     context.SaveChanges();
                 }
-            }
             else
-            {
                 using (var context = new PizzaDbContext())
                 {
                     Order.TotalPrice = ResultSum;
@@ -647,22 +644,15 @@ namespace PizzaMario.ViewModels
                     }
 
                     var dbOrderItems = context.OrderItems.Where(x => x.OrderId == Order.Id).ToList();
-                    foreach (var orderItem in OrderItems)
-                    {
-                        context.OrderItems.AddOrUpdate(orderItem);
-                    }
+                    foreach (var orderItem in OrderItems) context.OrderItems.AddOrUpdate(orderItem);
 
                     foreach (var dbOrderItem in dbOrderItems)
-                    {
                         if (OrderItems.All(e => e.Id != dbOrderItem.Id))
-                        {
                             context.OrderItems.Remove(dbOrderItem);
-                        }
-                    }
 
                     context.SaveChanges();
                 }
-            }
+
             CurrentOrder = null;
             Order = new Order();
             TabIndex = 0;
