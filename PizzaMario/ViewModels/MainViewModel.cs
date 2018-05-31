@@ -188,6 +188,9 @@ namespace PizzaMario.ViewModels
                 NotifyPropertyChanged();
                 (ClickUpdateOrderCommand as DelegateCommand)?.RaiseCanExecuteChanged();
                 (ClickDeleteOrderCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+                NotifyPropertyChanged("IfOrderChoosed");
+                NotifyPropertyChanged("IfClientChoosed");
+                NotifyPropertyChanged("IfMenuItemsChoosed");
             }
         }
 
@@ -361,7 +364,7 @@ namespace PizzaMario.ViewModels
         {
             using (var context = new PizzaDbContext())
             {
-                if (MenuItems == null)
+                if (_menuItems == null)
                     _menuItems = new ObservableCollection<MenuItem>();
                 else
                     _menuItems.Clear();
@@ -452,7 +455,9 @@ namespace PizzaMario.ViewModels
             CurrentClient = null;
             using (var context = new PizzaDbContext())
             {
-                Order.Id = context.Orders.OrderByDescending(x => x.Id).First().Id + 1;
+                var lastId = context.Orders.OrderByDescending(x => x.Id).FirstOrDefault()?.Id;
+                Order.Id = 1;
+                if (lastId != null) Order.Id += lastId.Value;
             }
 
             TabIndex = 1;
@@ -620,13 +625,17 @@ namespace PizzaMario.ViewModels
 
         public void SubmitOrder()
         {
-            if (CurrentOrder == null)
+            if (Order.TotalPrice == 0)
                 using (var context = new PizzaDbContext())
                 {
                     Order.TotalPrice = ResultSum;
-                    Order.Client = CurrentClient;
                     Order.ClientId = CurrentClient.Id;
-                    context.Orders.Add(Order);
+                    context.Orders.AddOrUpdate(Order);
+                    foreach (var orderItem in OrderItems)
+                    {
+                        orderItem.MenuItem = null;
+                        orderItem.Order = null;
+                    }
                     context.OrderItems.AddRange(OrderItems);
                     context.SaveChanges();
                 }
@@ -634,18 +643,16 @@ namespace PizzaMario.ViewModels
                 using (var context = new PizzaDbContext())
                 {
                     Order.TotalPrice = ResultSum;
-                    var orderId = Order.Id;
-                    if (context.Orders.Any(e => e.Id == orderId))
-                    {
-                        context.Orders.Attach(Order);
-                        context.Entry(Order).State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        context.Orders.Add(Order);
-                    }
+                    Order.ClientId = CurrentClient.Id;
+                    context.Orders.AddOrUpdate(Order);
 
                     var dbOrderItems = context.OrderItems.Where(x => x.OrderId == Order.Id).ToList();
+
+                    foreach (var orderItem in OrderItems)
+                    {
+                        orderItem.MenuItem = null;
+                        orderItem.Order = null;
+                    }
                     foreach (var orderItem in OrderItems) context.OrderItems.AddOrUpdate(orderItem);
 
                     foreach (var dbOrderItem in dbOrderItems)
@@ -656,9 +663,15 @@ namespace PizzaMario.ViewModels
                 }
 
             CurrentOrder = null;
-            Order = new Order();
-            TabIndex = 0;
+            Order = null;
+            CurrentClient = null;
+            SummaryText = string.Empty;
+            OrderItems.Clear();
+            NotifyPropertyChanged("IfOrderChoosed");
+            NotifyPropertyChanged("IfClientChoosed");
+            NotifyPropertyChanged("IfMenuItemsChoosed");
             LoadOrders();
+            TabIndex = 0;
         }
     }
 }
