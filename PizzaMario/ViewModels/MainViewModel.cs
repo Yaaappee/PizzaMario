@@ -567,13 +567,13 @@ namespace PizzaMario.ViewModels
             var wasDiscounts = false;
             SummaryText = string.Empty;
 
-            SummaryText += "Client Info:" + Environment.NewLine;
+            SummaryText += "Информация о клиенте:" + Environment.NewLine;
             SummaryText += new string('=', 30) + Environment.NewLine;
-            SummaryText += $"| Name: {CurrentClient.FirstName} {CurrentClient.SecondName}" + Environment.NewLine;
-            SummaryText += $"| Phone Number: {CurrentClient.PhoneNumber}" + Environment.NewLine;
+            SummaryText += $"| Имя: {CurrentClient.FirstName} {CurrentClient.SecondName}" + Environment.NewLine;
+            SummaryText += $"| Номер телефона: {CurrentClient.PhoneNumber}" + Environment.NewLine;
             SummaryText += new string('=', 30) + Environment.NewLine;
             SummaryText += Environment.NewLine;
-            SummaryText += "Order Info:" + Environment.NewLine;
+            SummaryText += "Информация по заказу:" + Environment.NewLine;
             SummaryText += new string('=', 30) + Environment.NewLine;
             foreach (var orderItem in OrderItems)
             {
@@ -581,13 +581,15 @@ namespace PizzaMario.ViewModels
                 if (orderItem.Quantity >= 10)
                 {
                     SummaryText +=
-                        $"| {orderItem.MenuItem.Name} x{orderItem.Quantity} = {productPrice * 0.95:0.00} ({productPrice} - 5% discount *)";
+                        $"| {orderItem.MenuItem.Name} - {orderItem.MenuItem.Price} грн." + Environment.NewLine + 
+                        $"|  x{orderItem.Quantity} = {productPrice * 0.95:0.00} грн. ({productPrice} грн. - 5% скидка *)";
                     ResultSum += productPrice * 0.95;
                     wasDiscounts = true;
                 }
                 else
                 {
-                    SummaryText += $"| {orderItem.MenuItem.Name} x{orderItem.Quantity} = {productPrice}";
+                    SummaryText += $"| {orderItem.MenuItem.Name} - {orderItem.MenuItem.Price} грн." + Environment.NewLine +
+                                   $"|  x{orderItem.Quantity} = {productPrice:0.00} грн.";
                     ResultSum += productPrice;
                 }
 
@@ -595,17 +597,17 @@ namespace PizzaMario.ViewModels
             }
 
             SummaryText += new string('=', 30) + Environment.NewLine;
-            SummaryText += $"Total sum: {ResultSum}" + Environment.NewLine;
+            SummaryText += $"Общая сумма: {ResultSum}" + Environment.NewLine;
             SummaryText += Environment.NewLine;
             if (ResultSum >= 1000)
             {
-                SummaryText += $"RESULT SUM: {ResultSum * 0.95:0.00} ({ResultSum:0.00} - 5% discount **)";
+                SummaryText += $"СУММА ЗАКАЗА: {ResultSum * 0.95:0.00} грн. ({ResultSum:0.00} грн. - 5% скидка **)";
                 ResultSum *= 0.95;
                 wasDiscounts = true;
             }
             else
             {
-                SummaryText += $"RESULT SUM: {ResultSum:0.00}";
+                SummaryText += $"СУММА ЗАКАЗА: {ResultSum:0.00} грн.";
             }
 
             ResultSum = Math.Round(ResultSum, 2, MidpointRounding.AwayFromZero);
@@ -613,10 +615,10 @@ namespace PizzaMario.ViewModels
             {
                 SummaryText += Environment.NewLine;
                 SummaryText += new string('-', 30) + Environment.NewLine;
-                SummaryText += "*  - if order item count is 10 or more" + Environment.NewLine;
-                SummaryText += "     then we reduce product price by 5%" + Environment.NewLine;
-                SummaryText += "** - if total sum is more than 1000" + Environment.NewLine;
-                SummaryText += "     then we reduce total sum by 5%" + Environment.NewLine;
+                SummaryText += "*  - если заказано 10 (и более) одинаковых блюд или напитков" + Environment.NewLine;
+                SummaryText += "     мы даем скидку в 5% на это блюдо или напиток" + Environment.NewLine;
+                SummaryText += "** - если общая сумма заказа больше 1000 гривен" + Environment.NewLine;
+                SummaryText += "     мы даем скидку в 5% на всю сумму заказа" + Environment.NewLine;
             }
 
             WasCalculated = true;

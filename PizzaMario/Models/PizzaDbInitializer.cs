@@ -16,20 +16,20 @@ namespace PizzaMario.Models
             var categoryPizza = new Category
             {
                 Id = 1,
-                Name = "Pizza"
+                Name = "Пицца"
             };
 
             var categoryDrinks = new Category
             {
                 Id = 2,
-                Name = "Drinks"
+                Name = "Напитки"
             };
 
             var menuItemPizzaMargarita = new MenuItem
             {
                 Id = 1,
                 CategoryId = categoryPizza.Id,
-                Name = "Margarita",
+                Name = "Маргарита",
                 Price = 80.99
             };
 
@@ -45,7 +45,7 @@ namespace PizzaMario.Models
             {
                 Id = 3,
                 CategoryId = categoryPizza.Id,
-                Name = "Five Cheese",
+                Name = "Четыре сыра",
                 Price = 153.99
             };
 
@@ -69,7 +69,7 @@ namespace PizzaMario.Models
             {
                 Id = 6,
                 CategoryId = categoryDrinks.Id,
-                Name = "Juice",
+                Name = "Сок",
                 Price = 10.99
             };
 
@@ -77,7 +77,7 @@ namespace PizzaMario.Models
             {
                 Id = 7,
                 CategoryId = categoryPizza.Id,
-                Name = "American",
+                Name = "Американка",
                 Price = 111.99
             };
 
@@ -85,15 +85,15 @@ namespace PizzaMario.Models
             {
                 Id = 8,
                 CategoryId = categoryPizza.Id,
-                Name = "Tuna",
+                Name = "Пицца с тунцом",
                 Price = 181.99
             };
 
             var clientIhor = new Client
             {
                 Id = 1,
-                FirstName = "Ihor",
-                SecondName = "Sokolov",
+                FirstName = "Игорь",
+                SecondName = "Соколов",
                 BirthDate = new DateTime(1992, 11, 1),
                 PhoneNumber = "+380991234567"
             };
@@ -101,8 +101,8 @@ namespace PizzaMario.Models
             var clientEvgeniy = new Client
             {
                 Id = 2,
-                FirstName = "Evgeniy",
-                SecondName = "Fedchenko",
+                FirstName = "Евгений",
+                SecondName = "Федченко",
                 BirthDate = new DateTime(1991, 12, 31),
                 PhoneNumber = "+380997654321"
             };
@@ -188,6 +188,7 @@ namespace PizzaMario.Models
                 menuItemFiveCheese,
                 menuItemCola,
                 menuItemPepsi,
+                menuItemJuice,
                 menuItemAmerican,
                 menuItemTuna
             });

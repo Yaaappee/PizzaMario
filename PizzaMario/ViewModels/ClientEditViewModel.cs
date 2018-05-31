@@ -26,6 +26,11 @@ namespace PizzaMario.ViewModels
                 SecondName = client.SecondName;
                 PhoneNumber = client.PhoneNumber;
                 BirthDate = client.BirthDate;
+                Title = "Изменить клиента";
+            }
+            else
+            {
+                Title = "Добавить клиента";
             }
 
             ClickSaveChangesCommand = new DelegateCommand(SaveChanges, CanSaveChanges);
@@ -77,6 +82,18 @@ namespace PizzaMario.ViewModels
                 _birthDate = value;
                 NotifyPropertyChanged();
                 (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        private string _title;
+
+        public string Title
+        {
+            get { return _title; }
+            set
+            {
+                _title = value;
+                NotifyPropertyChanged();
             }
         }
 

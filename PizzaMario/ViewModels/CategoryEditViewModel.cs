@@ -18,6 +18,11 @@ namespace PizzaMario.ViewModels
             {
                 _currentCategoryId = category.Id;
                 Name = category.Name;
+                Title = "Изменить категорию";
+            }
+            else
+            {
+                Title = "Добавить категорию";
             }
 
             ClickSaveChangesCommand = new DelegateCommand(SaveChanges, CanSaveChanges);
@@ -36,6 +41,18 @@ namespace PizzaMario.ViewModels
                 _name = value;
                 NotifyPropertyChanged();
                 (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        private string _title;
+
+        public string Title
+        {
+            get { return _title; }
+            set
+            {
+                _title = value; 
+                NotifyPropertyChanged();
             }
         }
 

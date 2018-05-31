@@ -12,7 +12,7 @@
 
 
     <TabControl SelectedIndex="{Binding TabIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-        <TabItem Header="Orders" Width="100" Height="40">
+        <TabItem Header="Заказы" Width="100" Height="40">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="60" />
@@ -31,31 +31,31 @@
                     SelectedItem="{Binding CurrentOrder, Mode=TwoWay}"
                     IsReadOnly="True" Margin="5" Grid.Row="1" Grid.ColumnSpan="5">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Width="*" Binding="{Binding Path=Client.FirstName}" Header="First Name" />
+                        <DataGridTextColumn Width="*" Binding="{Binding Path=Client.FirstName}" Header="Имя" />
                         <DataGridTextColumn Width="*" Binding="{Binding Path=Client.SecondName}"
-                                            Header="Second Name" />
+                                            Header="Фамилия" />
                         <DataGridTextColumn Width="*" Binding="{Binding Path=Client.PhoneNumber}"
-                                            Header="Phone Number" />
+                                            Header="Номер телефона" />
                         <DataGridTextColumn Width="*" Binding="{Binding Date, StringFormat={}{0:dd.MM.yyyy}}"
-                                            Header="Order date" />
-                        <DataGridTextColumn Width="*" Binding="{Binding TotalPrice}" Header="Total price" />
+                                            Header="Дата заказа" />
+                        <DataGridTextColumn Width="*" Binding="{Binding TotalPrice}" Header="Сумма заказа" />
                     </DataGrid.Columns>
                 </DataGrid>
-                <Label Content="Client Phone No." Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"
+                <Label Content="Тел. номер клиента" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"
                        VerticalAlignment="Center" />
                 <TextBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="0"
                          TextWrapping="Wrap"
                          Text="{Binding OrderClientNumberToSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Margin="5,0" Height="24" />
-                <Button Content="Add" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Width="Auto" Height="24"
+                <Button Content="Добавить" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Width="Auto" Height="24"
                         Command="{Binding ClickAddOrderCommand}" Margin="5,0" />
-                <Button Content="Update" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center"
+                <Button Content="Изменить" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center"
                         Command="{Binding ClickUpdateOrderCommand}" Margin="5,0" Height="24" />
-                <Button Content="Delete" VerticalAlignment="Center" Command="{Binding ClickDeleteOrderCommand}"
+                <Button Content="Удалить" VerticalAlignment="Center" Command="{Binding ClickDeleteOrderCommand}"
                         Grid.Row="0" Grid.Column="4" Margin="5,0" Height="24" />
             </Grid>
         </TabItem>
-        <TabItem Header="Menu" Width="100" Height="40" IsEnabled="{Binding IfOrderChoosed}">
+        <TabItem Header="Меню" Width="100" Height="40" IsEnabled="{Binding IfOrderChoosed}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="60" />
@@ -81,24 +81,24 @@
                     Grid.RowSpan="4
                     ">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name" />
-                        <DataGridTextColumn Width="*" Binding="{Binding Price}" Header="Price" />
-                        <DataGridTextColumn Width="*" Binding="{Binding Path=Category.Name}" Header="Category" />
+                        <DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Название" />
+                        <DataGridTextColumn Width="*" Binding="{Binding Price}" Header="Цена" />
+                        <DataGridTextColumn Width="*" Binding="{Binding Path=Category.Name}" Header="Категория" />
                     </DataGrid.Columns>
                 </DataGrid>
-                <Label Content="Name" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"
+                <Label Content="Название" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"
                        VerticalAlignment="Center" />
                 <TextBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="0"
                          TextWrapping="Wrap"
                          Text="{Binding MenuItemNameToSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Margin="5,0" Height="25" />
-                <Button Content="Add" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Width="Auto"
+                <Button Content="Добавить" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Width="Auto"
                         Command="{Binding ClickAddMenuItemCommand}" Margin="5,0" Height="24" />
-                <Button Content="Update" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center"
+                <Button Content="Изменить" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center"
                         Command="{Binding ClickUpdateMenuItemCommand}" Margin="5,0" Height="24" />
-                <Button Content="Delete" VerticalAlignment="Center" Command="{Binding ClickDeleteMenuItemCommand}"
+                <Button Content="Удалить" VerticalAlignment="Center" Command="{Binding ClickDeleteMenuItemCommand}"
                         Grid.Row="0" Grid.Column="4" Margin="5,0" Height="24" />
-                <Label Content="Order list" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center"
+                <Label Content="Список заказа" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center"
                        VerticalAlignment="Center" />
                 <DataGrid Grid.Column="6" Margin="5" Grid.Row="1" Grid.RowSpan="4" IsReadOnly="True"
                           AutoGenerateColumns="False"
@@ -106,9 +106,9 @@
                           SelectedItem="{Binding CurrentOrderItem, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                           CanUserAddRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Width="*" Binding="{Binding MenuItem.Name}" Header="Item" />
+                        <DataGridTextColumn Width="*" Binding="{Binding MenuItem.Name}" Header="Пункт меню" />
                         <DataGridTextColumn Width="*" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
-                                            Header="Count" />
+                                            Header="Количество" />
                     </DataGrid.Columns>
                 </DataGrid>
                 <Button Content="→" Grid.Column="5" HorizontalAlignment="Center" Margin="5" Grid.Row="1" Width="40"
@@ -121,7 +121,7 @@
                         Height="40" VerticalAlignment="Top" Command="{Binding ClickDeleteOrderItemCommand}" />
             </Grid>
         </TabItem>
-        <TabItem Header="Clients" Width="100" Height="40" IsEnabled="{Binding IfMenuItemsChoosed}">
+        <TabItem Header="Клиенты" Width="100" Height="40" IsEnabled="{Binding IfMenuItemsChoosed}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="60" />
@@ -140,31 +140,31 @@
                     SelectedItem="{Binding CurrentClient, Mode=TwoWay}"
                     IsReadOnly="True" Margin="5" Grid.Row="1" Grid.ColumnSpan="5">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Width="*" Binding="{Binding FirstName}" Header="First Name" />
-                        <DataGridTextColumn Width="*" Binding="{Binding SecondName}" Header="Second Name" />
+                        <DataGridTextColumn Width="*" Binding="{Binding FirstName}" Header="Имя" />
+                        <DataGridTextColumn Width="*" Binding="{Binding SecondName}" Header="Фамилия" />
                         <DataGridTextColumn Width="*" Binding="{Binding BirthDate, StringFormat={}{0:dd.MM.yyyy}}"
-                                            Header="Birthday" />
+                                            Header="Дата рождения" />
                         <DataGridTextColumn Width="*"
                                             Binding="{Binding RegistrationDate, StringFormat={}{0:dd.MM.yyyy}}"
-                                            Header="Registration date" />
-                        <DataGridTextColumn Width="*" Binding="{Binding PhoneNumber}" Header="Phone Number" />
+                                            Header="Дата регистрации" />
+                        <DataGridTextColumn Width="*" Binding="{Binding PhoneNumber}" Header="Номер телефона" />
                     </DataGrid.Columns>
                 </DataGrid>
-                <Label Content="Phone Number" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"
+                <Label Content="Номер телефона" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"
                        VerticalAlignment="Center" />
                 <TextBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="0"
                          TextWrapping="Wrap"
                          Text="{Binding PhoneNumberToSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Margin="5,0" Height="25" />
-                <Button Content="Add" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Width="Auto"
+                <Button Content="Добавить" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Width="Auto"
                         Command="{Binding ClickAddClientCommand}" Margin="5,0" Height="24" />
-                <Button Content="Update" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center"
+                <Button Content="Изменить" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center"
                         Command="{Binding ClickUpdateClientCommand}" Margin="5,0" Height="24" />
-                <Button Content="Delete" VerticalAlignment="Center" Command="{Binding ClickDeleteClientCommand}"
+                <Button Content="Удалить" VerticalAlignment="Center" Command="{Binding ClickDeleteClientCommand}"
                         Grid.Row="0" Grid.Column="4" Margin="5,0" Height="24" />
             </Grid>
         </TabItem>
-        <TabItem Header="Summary" Width="100" Height="40" IsEnabled="{Binding IfClientChoosed}">
+        <TabItem Header="Оформление заказа" Width="Auto" Height="40" IsEnabled="{Binding IfClientChoosed}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -175,11 +175,11 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <Button Content="Calculate" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"
-                        HorizontalAlignment="Left" Height="50" Width="75" FontWeight="Bold"
+                <Button Content="Рассчитать заказ" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"
+                        HorizontalAlignment="Left" Height="50" Width="Auto" FontWeight="Bold"
                         Command="{Binding ClickCalculateOrderButton}" Margin="5,5,0,5" />
-                <Button Content="Submit" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
-                        HorizontalAlignment="Right" Height="50" Width="75" FontWeight="Bold"
+                <Button Content="Подтвердить заказ" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
+                        HorizontalAlignment="Right" Height="50" Width="Auto" FontWeight="Bold"
                         Command="{Binding ClickSubmitOrderButton}" Margin="0,5,5.4,5" />
                 <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" HorizontalScrollBarVisibility="Auto"
                               VerticalScrollBarVisibility="Auto">

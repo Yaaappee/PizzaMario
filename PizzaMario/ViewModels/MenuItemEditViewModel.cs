@@ -30,6 +30,11 @@ namespace PizzaMario.ViewModels
                 Name = menuItem.Name;
                 CurrentCategory = Categories.First(x => x.Id == menuItem.CategoryId);
                 Price = menuItem.Price;
+                Title = "Изменить пункт в меню";
+            }
+            else
+            {
+                Title = "Добавить пункт в меню";
             }
 
             ClickSaveChangesCommand = new DelegateCommand(SaveChanges, CanSaveChanges);
@@ -92,6 +97,18 @@ namespace PizzaMario.ViewModels
                 _price = value;
                 NotifyPropertyChanged();
                 (ClickSaveChangesCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        private string _title;
+
+        public string Title
+        {
+            get { return _title; }
+            set
+            {
+                _title = value;
+                NotifyPropertyChanged();
             }
         }
 
