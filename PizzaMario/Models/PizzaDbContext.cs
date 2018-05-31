@@ -11,8 +11,6 @@ namespace PizzaMario.Models
 
         public DbSet<Client> Clients { get; set; }
 
-        public DbSet<Adress> Adresses { get; set; }
-
         public DbSet<Category> Categories { get; set; }
 
         public DbSet<MenuItem> MenuItems { get; set; }

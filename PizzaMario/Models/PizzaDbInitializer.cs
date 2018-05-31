@@ -97,27 +97,7 @@ namespace PizzaMario.Models
                 BirthDate = new DateTime(1992, 11, 1),
                 PhoneNumber = "+380991234567"
             };
-
-            var adressIhor1 = new Adress
-            {
-                Id = 1,
-                City = "Kiev",
-                Street = "Lobody",
-                BuildingNumber = "22",
-                AppartmentNumber = "432",
-                ClientId = clientIhor.Id
-            };
-
-            var adressIhor2 = new Adress
-            {
-                Id = 2,
-                City = "Kiev",
-                Street = "Peremogy",
-                BuildingNumber = "64a",
-                AppartmentNumber = "11",
-                ClientId = clientIhor.Id
-            };
-
+            
             var clientEvgeniy = new Client
             {
                 Id = 2,
@@ -127,21 +107,10 @@ namespace PizzaMario.Models
                 PhoneNumber = "+380997654321"
             };
 
-            var adressEvgeniy1 = new Adress
-            {
-                Id = 3,
-                City = "Kiev",
-                Street = "Khreshatyk",
-                BuildingNumber = "1",
-                AppartmentNumber = "1",
-                ClientId = clientEvgeniy.Id
-            };
-
             var order1 = new Order
             {
                 Id = 1,
                 ClientId = clientIhor.Id,
-                AdressId = adressIhor1.Id,
                 TotalPrice = menuItemFiveCheese.Price + menuItemCola.Price * 2
             };
 
@@ -165,7 +134,6 @@ namespace PizzaMario.Models
             {
                 Id = 2,
                 ClientId = clientEvgeniy.Id,
-                AdressId = adressEvgeniy1.Id,
                 TotalPrice = menuItemTuna.Price + menuItemPizzaBbq.Price + menuItemPepsi.Price + menuItemJuice.Price
             };
 
@@ -205,13 +173,6 @@ namespace PizzaMario.Models
             {
                 clientIhor,
                 clientEvgeniy
-            });
-
-            context.Adresses.AddRange(new[]
-            {
-                adressIhor1,
-                adressIhor2,
-                adressEvgeniy1
             });
 
             context.Categories.AddRange(new[]

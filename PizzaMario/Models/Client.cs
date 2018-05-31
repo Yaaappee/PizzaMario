@@ -9,7 +9,6 @@ namespace PizzaMario.Models
     {
         public Client()
         {
-            Adresses = new ObservableCollection<Adress>();
             Orders = new ObservableCollection<Order>();
         }
 
@@ -24,8 +23,6 @@ namespace PizzaMario.Models
         public DateTime? BirthDate { get; set; }
 
         public string PhoneNumber { get; set; }
-
-        public virtual ObservableCollection<Adress> Adresses { get; set; }
 
         public virtual ObservableCollection<Order> Orders { get; set; }
     }

@@ -7,7 +7,6 @@ namespace PizzaMario.Models
         public static void Configure(DbModelBuilder modelBuilder)
         {
             ConfigureClientEntity(modelBuilder);
-            ConfigureAdressEntity(modelBuilder);
             ConfigureCategoryEntity(modelBuilder);
             ConfigureMenuItemEntity(modelBuilder);
             ConfigureOrderEntity(modelBuilder);
@@ -17,14 +16,6 @@ namespace PizzaMario.Models
         private static void ConfigureClientEntity(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Client>();
-        }
-
-        private static void ConfigureAdressEntity(DbModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Adress>()
-                .HasRequired(t => t.Client)
-                .WithMany(c => c.Adresses)
-                .WillCascadeOnDelete(true);
         }
 
         private static void ConfigureCategoryEntity(DbModelBuilder modelBuilder)

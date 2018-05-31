@@ -23,9 +23,5 @@ namespace PizzaMario.Models
         public int ClientId { get; set; }
 
         public virtual Client Client { get; set; }
-
-        public int? AdressId { get; set; }
-
-        public virtual Adress Adress { get; set; }
     }
 }
