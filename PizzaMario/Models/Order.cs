@@ -12,8 +12,6 @@ namespace PizzaMario.Models
             OrderItems = new ObservableCollection<OrderItem>();
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        [SqlDefaultValue(DefaultValue = "DATETIME('now')")]
         public DateTime Date { get; set; }
 
         public double TotalPrice { get; set; }

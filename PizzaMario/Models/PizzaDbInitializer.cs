@@ -111,7 +111,8 @@ namespace PizzaMario.Models
             {
                 Id = 1,
                 ClientId = clientIhor.Id,
-                TotalPrice = menuItemFiveCheese.Price + menuItemCola.Price * 2
+                TotalPrice = menuItemFiveCheese.Price + menuItemCola.Price * 2,
+                Date = DateTime.Now
             };
 
             var order1Item1 = new OrderItem
@@ -134,7 +135,8 @@ namespace PizzaMario.Models
             {
                 Id = 2,
                 ClientId = clientEvgeniy.Id,
-                TotalPrice = menuItemTuna.Price + menuItemPizzaBbq.Price + menuItemPepsi.Price + menuItemJuice.Price
+                TotalPrice = menuItemTuna.Price + menuItemPizzaBbq.Price + menuItemPepsi.Price + menuItemJuice.Price,
+                Date = DateTime.Now
             };
 
             var order2Item1 = new OrderItem

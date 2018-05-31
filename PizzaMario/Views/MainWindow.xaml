@@ -36,7 +36,7 @@
                                             Header="Фамилия" />
                         <DataGridTextColumn Width="*" Binding="{Binding Path=Client.PhoneNumber}"
                                             Header="Номер телефона" />
-                        <DataGridTextColumn Width="*" Binding="{Binding Date, StringFormat={}{0:dd.MM.yyyy}}"
+                        <DataGridTextColumn Width="*" Binding="{Binding Date, StringFormat={}{0:dd.MM.yyyy hh:mm}}"
                                             Header="Дата заказа" />
                         <DataGridTextColumn Width="*" Binding="{Binding TotalPrice}" Header="Сумма заказа" />
                     </DataGrid.Columns>

@@ -632,6 +632,7 @@ namespace PizzaMario.ViewModels
                 {
                     Order.TotalPrice = ResultSum;
                     Order.ClientId = CurrentClient.Id;
+                    Order.Date = DateTime.Now;
                     context.Orders.AddOrUpdate(Order);
                     foreach (var orderItem in OrderItems)
                     {
@@ -646,6 +647,7 @@ namespace PizzaMario.ViewModels
                 {
                     Order.TotalPrice = ResultSum;
                     Order.ClientId = CurrentClient.Id;
+                    Order.Date = DateTime.Now;
                     context.Orders.AddOrUpdate(Order);
 
                     var dbOrderItems = context.OrderItems.Where(x => x.OrderId == Order.Id).ToList();
